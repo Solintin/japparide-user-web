@@ -4,7 +4,7 @@
     <div
       class="bg-[#4207ce] px-4 py-3 text-white fixed top-0 max-w-xl w-full flex justify-between items-center"
     >
-      <a href="/dashboard" class="font-bold text-[#0192ED]">
+      <a href="/" class="font-bold text-[#0192ED]">
         <img src="@/assets/Svg/logo.svg" class="w-8 h-8" />
       </a>
       <div class="space-x-6 flex items-center">

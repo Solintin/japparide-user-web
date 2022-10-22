@@ -94,7 +94,7 @@ const routes = [
         // beforeEnter: routeGuard,
       },
       {
-        path: "/dashboard/passengers",
+        path: "/passenger",
         name: "Passengers",
         component: Passenger,
         // meta: {
