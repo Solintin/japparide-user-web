@@ -1,17 +1,18 @@
 <!-- eslint-disable -->
 <template>
   <div>
-    <Driver />
+    <Passenger />
+    
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
-import Driver from "../../components/driver.vue";
+import Passenger from "../../components/Passenger.vue";
 export default {
-  name: "Driver",
+  name: "Passenger",
   components: {
-    Driver,
+    Passenger,
   },
 
   data() {

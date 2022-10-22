@@ -9,8 +9,7 @@
       </a>
       <div class="space-x-6 flex items-center">
         <button class=" ">
-          <i class="fa-solid text-xl fa-bell"></i>
-        </button>
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>        </button>
       </div>
     </div>
 
@@ -18,18 +17,18 @@
     <div
       class="bg-[#4207ce] px-4 py-3 rounded-t-2xl text-sm md:text-xl text-white fixed bottom-0 max-w-xl w-full flex justify-around items-center"
     >
-      <a href="/dashboard/driver" class="font-bold">
+      <a href="/driver" class="font-bold">
         <i class="fa-solid fa-taxi"></i>
       </a>
 
-      <a href="/dashboard" class="font-bold">
+      <a href="#" class="font-bold">
         <i class="fa-solid fa-clock-rotate-left"></i>      </a>
 
-      <a href="/dashboard" class="font-bold">
+      <a href="#" class="font-bold">
         <i class="fa-solid fa-user-gear"></i>
       </a>
 
-      <a href="/dashboard" class="font-bold">
+      <a href="#" class="font-bold">
         <i class="fa-solid fa-bell"></i>
       </a>
     </div>

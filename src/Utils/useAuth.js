@@ -20,12 +20,7 @@ export const useRegister = async (
 ) => {
   handleLoading(true);
   await axios
-    .post("/users/", credentials, {
-      headers: {
-        authorization:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsb2NhbGhvc3QiLCJpYXQiOjE2NjMyMzI0ODIsImV4cCI6MTY3OTAxMjQ4MiwidXNlciI6eyJpZCI6NCwidXNlcm5hbWUiOiJGbGFzaCIsInJvbGVzIjpbImFkbWluaXN0cmF0b3IiXX19.86Dt3jlrDtMSO_tBbGEq6u76AQfDrprdBb7yGochV3Y",
-      },
-    })
+    .post("/auth/local/register", credentials)
     .then((response) => {
       handleLoading(false);
       dis.$toast.success("Registration Successful");
@@ -57,17 +52,23 @@ export const useLogin = async (
 ) => {
   handleLoading(true);
   await axios
-    .post("/users/login/", credentials)
+    .post("/auth/local/", credentials)
     .then((response) => {
       console.log(response);
-      store.dispatch("setUser", response.data.data);
-      const { user_id } = response.data.data;
-      const { access_token } = response.data.data;
-      getUsers(user_id, access_token, store, router, dis, handleLoading);
+
+      const { is_user_also_a_driver } = response.data.user;
+      store.dispatch("setUserData", response.data);
+      if (is_user_also_a_driver) {
+        router.push("/driver");
+        dis.$swal("Welcome back", `Login Succesful`, "success");
+      } else {
+        router.push("/passenger");
+        dis.$swal("Welcome back", `Login Succesful`, "success");
+      }
     })
     .catch((error) => {
       handleLoading(false);
-      dis.$toast.error(error.response.data.error[0]);
+      dis.$toast.error(error.response.data.error.message);
       console.log(error);
     });
 };

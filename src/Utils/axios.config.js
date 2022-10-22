@@ -6,7 +6,7 @@ import axios from "axios";
 // Next we make an 'instance' of it
 const instance = axios.create({
   // .. where we make our configurations
-  baseURL: "https://test.middey.com/wp-json/rimplenet/v1/",
+  baseURL: "https://backend.japparide.com/api/",
 });
 
 // Where you would set stuff like your 'Authorization' header, etc ...

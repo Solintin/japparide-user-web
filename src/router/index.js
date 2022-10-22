@@ -19,6 +19,7 @@ import RegisterUser from "@/views/register-user.vue";
 // // Dasboard Routes
 import Index from "@/views/Dashboard/index.vue";
 import AwaitingRide from "@/views/Dashboard/driver.vue";
+import Passenger from "@/views/Dashboard/passenger.vue";
 // import VerifyEmail from "@/views/Dashboard/VerifyEmail.vue";
 // import VerifyPhone from "@/views/Dashboard/VerifyPhone.vue";
 // import Dashboard from "@/views/Dashboard/dashboard.vue";
@@ -29,22 +30,23 @@ import AwaitingRide from "@/views/Dashboard/driver.vue";
 // import LoginWithBiometric from "@/views/loginwithbiometric.vue";
 // import MobileLogin from "@/views/MobileLogin.vue";
 // import Swipetopay from "@/views/Dashboard/swipepay.vue";
-import store from "@/store";
 
-const routeGuard = (to, from, next) => {
-  const { isLoggedIn } = store.getters.data;
-  const { rimplenet_account_status } = store.getters.currentUserData;
+// import store from "@/store";
 
-  if (
-    to.matched.some((record) => record.meta.requiresLogin) &&
-    isLoggedIn &&
-    rimplenet_account_status != "Blocked"
-  ) {
-    next();
-  } else {
-    next("/");
-  }
-};
+// const routeGuard = (to, from, next) => {
+//   const { isLoggedIn } = store.getters.data;
+//   const { rimplenet_account_status } = store.getters.currentUserData;
+
+//   if (
+//     to.matched.some((record) => record.meta.requiresLogin) &&
+//     isLoggedIn &&
+//     rimplenet_account_status != "Blocked"
+//   ) {
+//     next();
+//   } else {
+//     next("/");
+//   }
+// };
 Vue.use(VueRouter);
 
 const routes = [
@@ -84,6 +86,17 @@ const routes = [
         path: "/driver",
         name: "Driver",
         component: AwaitingRide,
+        // meta: {
+        //   requiresLogin: true,
+        //   title:
+        //     "Dashboard | Modern Era payments solutions and accounting platform",
+        // },
+        // beforeEnter: routeGuard,
+      },
+      {
+        path: "/passenger",
+        name: "Passenger",
+        component: Passenger,
         // meta: {
         //   requiresLogin: true,
         //   title:
