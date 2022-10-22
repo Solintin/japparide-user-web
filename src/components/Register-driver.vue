@@ -3,9 +3,10 @@
   <div
     class="md:w-6/12 w-full container mx-auto flex flex-col justify-center items-center p-4"
   >
-  <router-link to="/"
+    <router-link to="/"
       ><img src="@/assets/Svg/logo.svg" class="w-16 h-16" alt=""
-    /></router-link>    <h1 class="text-center text-black font-bold mt-5">Welcome</h1>
+    /></router-link>
+    <h1 class="text-center text-black font-bold mt-5">Welcome</h1>
     <p class="text-sm text-center">
       Please provide the following details for your account
     </p>
@@ -163,7 +164,7 @@
 <script>
 import { validationMixin } from "vuelidate";
 import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
-import { useLogin } from "@/Utils/useAuth";
+import { useRegister } from "@/Utils/useAuth";
 export default {
   props: [],
   mixins: [validationMixin],
@@ -187,8 +188,18 @@ export default {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         //Login Logic
-        const credentials = { email: this.email, password: this.password };
-        await useLogin(
+        const credentials = {
+          username: this.name,
+          email: this.email,
+          phone_number: this.phone,
+          password: this.password,
+          current_city: "",
+          current_country: "NG",
+          country_of_origin: "NG",
+          phone_number_as_driver: this.phone,
+          is_user_also_a_driver: true,
+        };
+        await useRegister(
           credentials,
           this.$store,
           this.$router,

@@ -164,7 +164,7 @@
 <script>
 import { validationMixin } from "vuelidate";
 import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
-import { useLogin } from "@/Utils/useAuth";
+import { useRegister } from "@/Utils/useAuth";
 export default {
   props: [],
   mixins: [validationMixin],
@@ -188,8 +188,16 @@ export default {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         //Login Logic
-        const credentials = { email: this.email, password: this.password };
-        await useLogin(
+        const credentials = {
+          username: this.name,
+          email: this.email,
+          phone_number: this.phone,
+          password: this.password,
+          current_city: "",
+          current_country: "NG",
+          country_of_origin: "NG",
+        };
+        await useRegister(
           credentials,
           this.$store,
           this.$router,

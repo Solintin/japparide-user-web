@@ -1,18 +1,17 @@
 <!-- eslint-disable -->
 <template>
   <div>
-    <Passenger />
-    
+    <PassengerDashboard /> 
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
-import Passenger from "../../components/Passenger.vue";
+import PassengerDashboard from "../../components/PassengerDashboard.vue";
 export default {
-  name: "Passenger",
+  name: "PassengerDashboard",
   components: {
-    Passenger,
+    PassengerDashboard,
   },
 
   data() {

@@ -1,17 +1,17 @@
 <!-- eslint-disable -->
 <template>
   <div>
-    <Driver />
+    <DriverDashboard/>
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
-import Driver from "../../components/driver.vue";
+import DriverDashboard from "../../components/driver.vue";
 export default {
   name: "Driver",
   components: {
-    Driver,
+    DriverDashboard,
   },
 
   data() {

@@ -84,7 +84,7 @@ const routes = [
     children: [
       {
         path: "/driver",
-        name: "Driver",
+        name: "Drivers",
         component: AwaitingRide,
         // meta: {
         //   requiresLogin: true,
@@ -94,8 +94,8 @@ const routes = [
         // beforeEnter: routeGuard,
       },
       {
-        path: "/passenger",
-        name: "Passenger",
+        path: "/dashboard/passengers",
+        name: "Passengers",
         component: Passenger,
         // meta: {
         //   requiresLogin: true,

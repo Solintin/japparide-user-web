@@ -22,24 +22,22 @@ export const useRegister = async (
   await axios
     .post("/auth/local/register", credentials)
     .then((response) => {
-      handleLoading(false);
-      dis.$toast.success("Registration Successful");
-      axios
-        .get(
-          `/verify-email-address/?email_address=${credentials.user_email}&fire_email=true`
-        )
-        .then((response) => {
-          dis.$router.push(
-            `/verify_email?verification_email=${credentials.user_email}`
-          );
-        })
-        .catch((error) => {
-          errorLogger(dis, error.response.data.error);
-        });
+      console.log(response);
+
+      const { is_user_also_a_driver } = response.data.user;
+      store.dispatch("setUserData", response.data);
+      if (is_user_also_a_driver) {
+        router.push("/driver");
+        dis.$swal("Welcome", `Registration Succesful`, "success");
+      } else {
+        router.push("/passenger");
+        dis.$swal("Welcome", `Registration Succesful`, "success");
+      }
     })
     .catch((error) => {
       handleLoading(false);
-      errorLogger(error.response.data.error, dis);
+      dis.$toast.error(error.response.data.error.message);
+      console.log(error);
     });
 };
 

@@ -13,7 +13,7 @@
 <script>
 // import { uuid } from "uuidv4";
 export default {
-  name: "Passenger",
+  name: "Passengers",
 
   data() {
     return {};
