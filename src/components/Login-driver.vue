@@ -3,8 +3,9 @@
   <div
     class="md:w-6/12 w-full container mx-auto flex flex-col justify-center items-center p-4"
   >
-    <img src="@/assets/Svg/logo.svg" class="w-16 h-16" alt="" />
-    <h1 class="text-center text-black font-bold mt-5">Welcome</h1>
+  <router-link to="/"
+      ><img src="@/assets/Svg/logo.svg" class="w-16 h-16" alt=""
+    /></router-link>    <h1 class="text-center text-black font-bold mt-5">Welcome</h1>
     <p class="text-sm text-center">Please provide the following details for your account</p>
     <div class="w-full mt-16">
       <div
@@ -83,7 +84,7 @@
         class="text-base font-medium mt-5 flex justify-center items-start space-x-5"
       >
         <h1>Dont have an account?</h1>
-        <router-link to="/register" class="text-[#4207ce] font-semibold"
+        <router-link to="/register-driver" class="text-[#4207ce] font-semibold"
           >Sign up</router-link
         >
       </div>

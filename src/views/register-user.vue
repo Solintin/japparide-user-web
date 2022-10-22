@@ -7,7 +7,7 @@
 <!-- eslint-disable -->
 
 <script>
-import Register from "../components/Register.vue";
+import Register from "../components/Register-user.vue";
 export default {
   name: "register",
   components: {

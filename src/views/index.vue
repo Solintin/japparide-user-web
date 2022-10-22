@@ -9,7 +9,7 @@
      <router-link to="/login-driver" class="proceed_button">
         Proceed as driver
      </router-link>
-     <router-link to="/" class="proceed_button">
+     <router-link to="/login" class="proceed_button">
         Book a ride
      </router-link>
     </div>

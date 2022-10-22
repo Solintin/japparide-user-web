@@ -3,9 +3,12 @@
   <div
     class="md:w-6/12 w-full container mx-auto flex flex-col justify-center items-center p-4"
   >
-    <img src="@/assets/Svg/logo.svg" class="w-16 h-16" alt="" />
-    <h1 class="text-center text-black font-bold mt-5">Welcome</h1>
-    <p class="text-sm text-center">Please provide the following details for your account</p>
+  <router-link to="/"
+      ><img src="@/assets/Svg/logo.svg" class="w-16 h-16" alt=""
+    /></router-link>    <h1 class="text-center text-black font-bold mt-5">Welcome</h1>
+    <p class="text-sm text-center">
+      Please provide the following details for your account
+    </p>
     <div class="w-full mt-16">
       <div
         class="my-4 bg-[#ECECEC] rounded-md flex border border-gray-300 shadow-md"
@@ -123,8 +126,11 @@
         >
           Password is required!
         </p>
-        <p v-if="!$v.confirm_password.minLength" class="">
-          Password must be between 6 characters and above
+        <p
+          v-if="!$v.confirm_password.sameAsPassword"
+          class="me-auto text-j2g-core"
+        >
+          Passwords does not tally
         </p>
       </div>
 
@@ -156,7 +162,7 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import { required, minLength, email } from "vuelidate/lib/validators";
+import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
 import { useLogin } from "@/Utils/useAuth";
 export default {
   props: [],
@@ -201,6 +207,8 @@ export default {
     },
     confirm_password: {
       required,
+      minLength: minLength(6),
+      sameAsPassword: sameAs("password"),
     },
     phone: {
       required,

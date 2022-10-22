@@ -7,7 +7,7 @@
 <!-- eslint-disable -->
 
 <script>
-import Login from "../components/Login.vue";
+import Login from "../components/Login-user.vue";
 // import { uuid } from "uuidv4";
 export default {
   name: "login",

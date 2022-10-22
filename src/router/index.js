@@ -6,8 +6,10 @@ import VueRouter from "vue-router";
 import Home from "@/views/index.vue";
 
 // Auth Routes
-import Login from "@/views/login.vue";
-import Register from "@/views/register.vue";
+import LoginDriver from "@/views/login-driver.vue";
+import RegisterDriver from "@/views/register-driver.vue";
+import LoginUser from "@/views/login-user.vue";
+import RegisterUser from "@/views/register-user.vue";
 // import Forgotpassword from "@/views/forgotpassword.vue";
 // import Resetpassword from "@/views/resetpassword.vue";
 // import Changepassword from "@/views/changepassword.vue";
@@ -15,7 +17,8 @@ import Register from "@/views/register.vue";
 // import AccountDeactivation from "@/views/deactivate.vue";
 
 // // Dasboard Routes
-// import Index from "@/views/Dashboard/index.vue";
+import Index from "@/views/Dashboard/index.vue";
+import AwaitingRide from "@/views/Dashboard/driver.vue";
 // import VerifyEmail from "@/views/Dashboard/VerifyEmail.vue";
 // import VerifyPhone from "@/views/Dashboard/VerifyPhone.vue";
 // import Dashboard from "@/views/Dashboard/dashboard.vue";
@@ -52,121 +55,44 @@ const routes = [
   },
 
   {
-    path: "/login-driver",
-    name: "Login",
-    component: Login,
+    path: "/login",
+    name: "LoginUser",
+    component: LoginUser,
   },
   {
     path: "/register",
-    name: "register",
-    component: Register,
+    name: "registerUser",
+    component: RegisterUser,
   },
-  // {
-  //   path: "/forgotpassword",
-  //   name: "Forgotpassword",
-  //   component: Forgotpassword,
-  // },
-  // {
-  //   path: "/resetpassword",
-  //   name: "Resetpassword",
-  //   component: Resetpassword,
-  // },
-  // {
-  //   path: "/changepassword",
-  //   name: "changepassword",
-  //   component: Changepassword,
-  // },
-  // {
-  //   path: "/verify_email",
-  //   name: "VerifyEmail",
-  //   component: VerifyEmail,
-  // },
-  // {
-  //   path: "/verify_phone",
-  //   name: "VerifyPhone",
-  //   component: VerifyPhone,
-  // },
-  // {
-  //   path: "/blocked",
-  //   name: "blocked",
-  //   component: BlockedPage,
-  // },
-  // {
-  //   path: "/deactivate-account",
-  //   name: "AccountDeactivation",
-  //   component: AccountDeactivation,
-  // },
-  // {
-  //   path: "/setupbiometric",
-  //   name: "SetupBiometric",
-  //   component: SetupBiometric,
-  // },
-  // {
-  //   path: "/loginwithbiometric",
-  //   name: "loginwithbiometric",
-  //   component: LoginWithBiometric,
-  // },
-  // {
-  //   path: "/biometrics",
-  //   name: "MobileLogin",
-  //   component: MobileLogin,
-  // },
-  // {
-  //   path: "/index",
-  //   name: "DashboardIndex",
-  //   component: Index,
-  //   children: [
-  //     {
-  //       path: "/dashboard",
-  //       name: "dashboard",
-  //       component: Dashboard,
-  //       meta: {
-  //         requiresLogin: true,
-  //         title:
-  //           "Dashboard | Modern Era payments solutions and accounting platform",
-  //       },
-  //       beforeEnter: routeGuard,
-  //     },
-  //     {
-  //       path: "/transaction",
-  //       name: "transaction",
-  //       component: Transaction,
-  //       meta: {
-  //         requiresLogin: true,
-  //         title:
-  //           "Transactions | Modern Era payments solutions and accounting platform",
-  //       },
-  //       beforeEnter: routeGuard,
-  //     },
-  //     {
-  //       path: "/kyc",
-  //       name: "kyc",
-  //       component: Kyc,
-  //       meta: {
-  //         requiresLogin: true,
-  //       },
-  //       beforeEnter: routeGuard,
-  //     },
-  //     {
-  //       path: "/settings",
-  //       name: "Settings",
-  //       component: Settings,
-  //       meta: {
-  //         requiresLogin: true,
-  //       },
-  //       beforeEnter: routeGuard,
-  //     },
-  //     {
-  //       path: "/swipetopay",
-  //       name: "swipetopay",
-  //       component: Swipetopay,
-  //       meta: {
-  //         requiresLogin: true,
-  //       },
-  //       beforeEnter: routeGuard,
-  //     },
-  //   ],
-  // },
+  {
+    path: "/login-driver",
+    name: "LoginDriver",
+    component: LoginDriver,
+  },
+  {
+    path: "/register-driver",
+    name: "RegisterDriver",
+    component: RegisterDriver,
+  },
+
+  {
+    path: "/dashboard",
+    name: "DashboardIndex",
+    component: Index,
+    children: [
+      {
+        path: "/driver",
+        name: "Driver",
+        component: AwaitingRide,
+        // meta: {
+        //   requiresLogin: true,
+        //   title:
+        //     "Dashboard | Modern Era payments solutions and accounting platform",
+        // },
+        // beforeEnter: routeGuard,
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
