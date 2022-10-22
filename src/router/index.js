@@ -7,7 +7,7 @@ import Home from "@/views/index.vue";
 
 // Auth Routes
 import Login from "@/views/login.vue";
-// import Register from "@/views/register.vue";
+import Register from "@/views/register.vue";
 // import Forgotpassword from "@/views/forgotpassword.vue";
 // import Resetpassword from "@/views/resetpassword.vue";
 // import Changepassword from "@/views/changepassword.vue";
@@ -52,15 +52,15 @@ const routes = [
   },
 
   {
-    path: "/login",
+    path: "/login-driver",
     name: "Login",
     component: Login,
   },
-  // {
-  //   path: "/register",
-  //   name: "register",
-  //   component: Register,
-  // },
+  {
+    path: "/register",
+    name: "register",
+    component: Register,
+  },
   // {
   //   path: "/forgotpassword",
   //   name: "Forgotpassword",

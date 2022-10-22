@@ -6,7 +6,7 @@
         Please take note: For you to enjoy our ride app you will need to allow
         location access on your device
       </div>
-     <router-link to="/" class="proceed_button">
+     <router-link to="/login-driver" class="proceed_button">
         Proceed as driver
      </router-link>
      <router-link to="/" class="proceed_button">
@@ -30,7 +30,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .page_wrapper {
   width: 100vw;
   height: 100vh;
