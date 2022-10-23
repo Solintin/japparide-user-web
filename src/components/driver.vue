@@ -15,11 +15,11 @@
           class="rounded-md border w-8/12 h-52 mt-10 mx-auto"
           alt=""
         />
-        <audio controls ref="incoming">
-          <source src="@/assets/incoming.wav" type="audio/mpeg" />
-        </audio>
       </div>
       <div v-else>
+        <!-- <audio class="absolute left-[999999px] z-[100]" autoplay>
+          <source src="@/assets/incoming.wav" type="audio/mpeg" />
+        </audio> -->
         <h1 class="font-bold mb-4">Incoming Request</h1>
         <div class="border divide-y-2 rounded-md text-left">
           <div class="grid grid-cols-2 items-center py-3 px-4">
@@ -60,12 +60,14 @@
             </div>
           </div>
 
-          <button @click="acceptRide" class="button mt-4 mb-2 w-full">
-            Accept
-          </button>
-          <button class="cancel_button w-full" @click="cancelRide">
-            Cancel
-          </button>
+          <div class="mt-4">
+            <button @click="acceptRide" class="button mb-2 w-full">
+              Accept
+            </button>
+            <button class="cancel_button w-full" @click="cancelRide">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -82,7 +84,7 @@ export default {
     return {
       incomingRequest: false,
       data: null,
-      passenger: null
+      passenger: null,
     };
   },
   async created() {
@@ -93,20 +95,20 @@ export default {
     });
   },
   mounted() {
-    // const getAudio = this.$refs["incoming"];
-    // console.log(getAudio);
-    // getAudio.play();
+    const audio = new Audio(
+      "http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3"
+    );
+    audio.play();
   },
   methods: {
     acceptRide() {
+      const passenger = this.passenger;
+      const message = "Ride acccepted, I'm on my way.";
 
-        const passenger =  this.passenger
-        const message =  "Ride acccepted, I'm on my way."
-
-      sendAccept(message, passenger)
+      sendAccept(message, passenger);
     },
     cancelRide() {
-
+      this.incomingRequest = false;
     },
     checkRequest() {
       this.incomingRequest = true;
