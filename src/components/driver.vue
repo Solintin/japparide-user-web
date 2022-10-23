@@ -112,6 +112,10 @@ export default {
     },
     checkRequest() {
       this.incomingRequest = true;
+      const audio = new Audio(
+      "http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3"
+    );
+    audio.play();
 
       // const getAudio = this.$refs["incoming"];
       // getAudio.play();
