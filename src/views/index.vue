@@ -6,10 +6,10 @@
         Please take note: For you to enjoy our ride app you will need to allow
         location access on your device
       </div>
-     <router-link to="/login-driver" class="proceed_button">
+     <router-link to="/driver/login" class="proceed_button">
         Proceed as driver
      </router-link>
-     <router-link to="/login" class="proceed_button">
+     <router-link to="/passenger/login" class="proceed_button">
         Book a ride
      </router-link>
     </div>

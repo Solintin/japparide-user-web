@@ -136,7 +136,7 @@
 <!-- eslint-disable -->
 
 <script>
-import axios from "axios";
+import { io } from "socket.io-client";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 export default {
@@ -157,6 +157,15 @@ export default {
       duration: "",
       payment: "cash",
     };
+  },
+  async created() {
+    const socket = io("http://localhost:3000");
+    socket.on("connect", () => {
+      console.log(`Connected with id:${socket.id}`);
+    });
+    
+
+    
   },
   mounted() {
     this.showMap();
@@ -181,7 +190,10 @@ export default {
   },
   methods: {
     handleBooking() {
-      if (this.bookingState == "booking" || this.bookingState == "searching_driver") {
+      if (
+        this.bookingState == "booking" ||
+        this.bookingState == "searching_driver"
+      ) {
         this.bookingState = "ride_detail";
       } else {
         this.bookingState = "booking";
@@ -190,8 +202,6 @@ export default {
     showMap() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log(position.coords.latitude);
-          console.log(position.coords.longitude);
           this.initMap(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
