@@ -152,7 +152,7 @@
         class="text-base font-medium mt-5 flex justify-center items-start space-x-5"
       >
         <h1>Already a user?</h1>
-        <router-link to="/login-driver" class="text-[#4207ce] font-semibold"
+        <router-link to="/driver/login" class="text-[#4207ce] font-semibold"
           >Sign in</router-link
         >
       </div>

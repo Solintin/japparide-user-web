@@ -27,10 +27,10 @@ export const useRegister = async (
       const { is_user_also_a_driver } = response.data.user;
       store.dispatch("setUserData", response.data);
       if (is_user_also_a_driver) {
-        router.push("/driver");
+        router.push("/driver/dashboard");
         dis.$swal("Welcome", `Registration Succesful`, "success");
       } else {
-        router.push("/passenger");
+        router.push("/passenger/dashboard");
         dis.$swal("Welcome", `Registration Succesful`, "success");
       }
     })
@@ -57,10 +57,10 @@ export const useLogin = async (
       const { is_user_also_a_driver } = response.data.user;
       store.dispatch("setUserData", response.data);
       if (is_user_also_a_driver) {
-        router.push("/driver");
+        router.push("/driver/dashboard");
         dis.$swal("Welcome back", `Login Succesful`, "success");
       } else {
-        router.push("/passenger");
+        router.push("/passenger/dashboard");
         dis.$swal("Welcome back", `Login Succesful`, "success");
       }
     })

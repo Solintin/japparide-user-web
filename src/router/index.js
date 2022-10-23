@@ -19,7 +19,8 @@ import RegisterUser from "@/views/register-user.vue";
 // // Dasboard Routes
 import Index from "@/views/Dashboard/index.vue";
 import AwaitingRide from "@/views/Dashboard/driver.vue";
-import Passenger from "@/views/Dashboard/passenger.vue";
+import Passenger from "@/views/Passenger/index.vue";
+import PassengerHome from "@/views/Passenger/Home.vue";
 // import VerifyEmail from "@/views/Dashboard/VerifyEmail.vue";
 // import VerifyPhone from "@/views/Dashboard/VerifyPhone.vue";
 // import Dashboard from "@/views/Dashboard/dashboard.vue";
@@ -57,22 +58,22 @@ const routes = [
   },
 
   {
-    path: "/login",
+    path: "/passenger/login",
     name: "LoginUser",
     component: LoginUser,
   },
   {
-    path: "/register",
+    path: "/passenger/register",
     name: "registerUser",
     component: RegisterUser,
   },
   {
-    path: "/login-driver",
+    path: "/driver/login",
     name: "LoginDriver",
     component: LoginDriver,
   },
   {
-    path: "/register-driver",
+    path: "/driver/register",
     name: "RegisterDriver",
     component: RegisterDriver,
   },
@@ -83,7 +84,7 @@ const routes = [
     component: Index,
     children: [
       {
-        path: "/driver",
+        path: "/driver/dashboard",
         name: "Drivers",
         component: AwaitingRide,
         // meta: {
@@ -93,10 +94,19 @@ const routes = [
         // },
         // beforeEnter: routeGuard,
       },
+      
+    ],
+
+  },
+  {
+    path: "/passenger",
+    name: "PassengerDashboardIndex",
+    component: Passenger,
+    children: [
       {
-        path: "/passenger",
-        name: "Passengers",
-        component: Passenger,
+        path: "/passenger/dashboard",
+        name: "PassengerHome",
+        component: PassengerHome,
         // meta: {
         //   requiresLogin: true,
         //   title:
@@ -104,7 +114,9 @@ const routes = [
         // },
         // beforeEnter: routeGuard,
       },
+      
     ],
+
   },
 ];
 

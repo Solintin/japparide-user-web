@@ -87,7 +87,7 @@
         class="text-base font-medium mt-5 flex justify-center items-start space-x-5"
       >
         <h1>Dont have an account?</h1>
-        <router-link to="/register" class="text-[#4207ce] font-semibold"
+        <router-link to="/passenger/register" class="text-[#4207ce] font-semibold"
           >Sign up</router-link
         >
       </div>
