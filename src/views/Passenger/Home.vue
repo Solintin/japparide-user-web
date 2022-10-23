@@ -109,10 +109,7 @@
             <label for="transfer">Transfer</label>
           </div>
         </div>
-        <button
-          @click="bookingState = 'searching_driver'"
-          class="button mt-4 mb-2 w-full"
-        >
+        <button @click="bookRide" class="button mt-4 mb-2 w-full">
           Continue
         </button>
         <button class="cancel_button w-full" @click="handleBooking">
@@ -124,8 +121,10 @@
         class="md:w-6/12 p-4 w-full flex flex-col justify-center items-center space-y-4"
         v-if="bookingState == 'searching_driver'"
       >
-        <div class="info">Driver will be assigned to you shortly...</div>
-        <img src="@/assets/searching.gif" alt="" class="h-40 w-40" />
+        <div v-if="!incomingAccept" class="info mx-auto" >JapparideAI will assigned driver to you shortly...</div>
+        <div v-else class="info_success mx-auto" >Ride accepted, driver on his way</div>
+        <img v-if="!incomingAccept" src="@/assets/searching.gif" alt="" class="h-40 w-40" />
+        <img v-else src="@/assets/driving.gif" alt="" class="h-40 w-40" />
         <button class="cancel_button w-full" @click="handleBooking">
           Cancel
         </button>
@@ -136,9 +135,10 @@
 <!-- eslint-disable -->
 
 <script>
-import { io } from "socket.io-client";
+import { sendRequest, getAccept } from "@/Utils/socket";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
+import {mapGetters} from 'vuex'
 export default {
   name: "Passengers",
   mixins: [validationMixin],
@@ -150,6 +150,7 @@ export default {
     return {
       bookingState: "booking",
       loading: false,
+      incomingAccept: false,
       pickup: "",
       destination: "",
       rideFair: 0,
@@ -158,16 +159,14 @@ export default {
       payment: "cash",
     };
   },
-  async created() {
-    const socket = io("http://localhost:3000");
-    socket.on("connect", () => {
-      console.log(`Connected with id:${socket.id}`);
-    });
-    
-
-    
+   created() {
+    getAccept(this.checkAccept)
+  },
+  computed: {
+    ...mapGetters(["currentUserData"])
   },
   mounted() {
+
     this.showMap();
     const pickupLocation = new google.maps.places.Autocomplete(
       this.$refs["pickup"]
@@ -189,6 +188,22 @@ export default {
     });
   },
   methods: {
+    checkAccept() {
+      this.incomingAccept = true;
+    },
+    bookRide() {
+      this.bookingState = "searching_driver";
+      const rideRequestInfo = {
+        destination: this .destination,
+        origin: this.pickup,
+        rideFair: this.rideFair,
+        distance: this.distance,
+        duration: this.duration,
+        payment: this.payment,
+        name: this.currentUserData.user.username
+      };
+      sendRequest(rideRequestInfo);
+    },
     handleBooking() {
       if (
         this.bookingState == "booking" ||
@@ -275,7 +290,7 @@ export default {
   font-weight: 500;
   cursor: pointer;
 }
-.info {
+.info, .info_success {
   border-left: 5px solid #ffaa00;
   padding: 10px;
   align-self: flex-start;
@@ -283,6 +298,10 @@ export default {
   color: #333;
   background-color: #fff;
   box-shadow: 0 5px 15px 5px #ccc;
+}
+.info_success{
+  border-left: 5px solid green;
+
 }
 .cancel_button {
   height: auto;
