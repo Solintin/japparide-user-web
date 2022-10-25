@@ -2,7 +2,7 @@
 
 import { io } from "socket.io-client";
 
-const socket = io("https://japparide.hrokuapp.com");
+const socket = io("https://japparide.herokuapp.com");
 
 export const startConnection = () => {
   socket.on("connect", () => {
