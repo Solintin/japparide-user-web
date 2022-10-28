@@ -171,6 +171,7 @@ export default {
     cancelRide() {
       this.incomingRequest = false;
       sendDriverCancelRequest(this.passenger);
+      this.$store.dispatch("setRideInfo", null);
     },
     checkRequest() {
       this.incomingRequest = true;

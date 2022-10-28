@@ -82,7 +82,7 @@ import confirm_action from "@/Utils/confirm_action";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
-import { sendDriverCancelRequest } from '../Utils/socket';
+import { sendDriverCancelRequest } from "../Utils/socket";
 export default {
   name: "Passengers",
   mixins: [validationMixin],
@@ -153,7 +153,8 @@ export default {
           console.log(res);
           if (ride_status == "cancelled") {
             this.$toast.success("Ride cancelled successfully");
-            sendDriverCancelRequest(this.rideInfo.user)
+            sendDriverCancelRequest(this.rideInfo.user);
+            this.$store.dispatch("setRideInfo", null);
             this.$router.push("/driver/dashboard");
           } else {
             this.$toast.success("Ride Started");
@@ -184,7 +185,9 @@ export default {
         / /g,
         "+"
       );
-      window.location.href = `https://www.google.com/maps/dir/${modifiedDriverLocation}/${modifiedPassengerLocation}/`;
+      window.open(
+        `https://www.google.com/maps/dir/${modifiedDriverLocation}/${modifiedPassengerLocation}/`, '_blank'
+      );
     },
     showMap() {
       navigator.geolocation.getCurrentPosition(
