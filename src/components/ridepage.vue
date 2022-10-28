@@ -5,7 +5,7 @@
     <div
       class="fixed z-[1] bottom-0 bg-white inset-x-0 rounded-t-3xl w-full p-4 flex justify-center items-center h-auto overflow-y-auto"
     >
-      <div class="max-w-xl w-full mt-6 p-2" v-if="bookingState === 'booking'">
+      <div class="max-w-xl w-full mt-6 p-2">
         <div class="border divide-y-2 rounded-md text-left">
           <div class="grid grid-cols-2 items-center py-3 px-4">
             <div><h1 class="font-medium text-sm">Full Name</h1></div>
@@ -14,7 +14,7 @@
             </div>
           </div>
           <div class="grid grid-cols-2 items-center py-3 px-4">
-            <div><h1 class="font-medium text-sm">Location</h1></div>
+            <div><h1 class="font-medium text-sm">Pickup</h1></div>
             <div>
               <h1 class="font-medium text-sm">{{ rideInfo.origin }}</h1>
             </div>
@@ -27,9 +27,10 @@
           </div>
         </div>
 
-        <div class="flex justify-between items-center py-2">
+        <div class="w-full space-y-4 mt-4">
           <button
-            @click="startTrip('started')"
+            v-if="!tripStarted"
+            @click="rideStatusHandler('started')"
             class="flex justify-center items-center space-x-3 button w-full"
             :class="loading ? 'cursor-not-allowed' : ''"
             :disabled="loading"
@@ -40,6 +41,33 @@
             ></div>
 
             <div v-else class="font-medium text-sm">Start Trip</div>
+          </button>
+          <button
+            v-else
+            @click="endTrip('completed')"
+            class="flex justify-center items-center space-x-3 button-endtrip w-full"
+            :class="loading ? 'cursor-not-allowed' : ''"
+            :disabled="loading"
+          >
+            <div
+              v-if="loading"
+              class="h-6 w-6 rounded-full border-4 border-t-[#fff] border-r-[#fff] border-b-[#ed3237] border-l-[#ed3237] animate-spin"
+            ></div>
+
+            <div v-else class="font-medium text-sm">End Trip</div>
+          </button>
+          <button
+            @click="cancelBookedRide('cancelled')"
+            class="flex justify-center items-center space-x-3 cancel_button w-full"
+            :class="loading ? 'cursor-not-allowed' : ''"
+            :disabled="loading"
+          >
+            <div
+              v-if="loading"
+              class="h-6 w-6 rounded-full border-4 border-t-[#fff] border-r-[#fff] border-b-[#ed3237] border-l-[#ed3237] animate-spin"
+            ></div>
+
+            <div v-else class="font-medium text-sm">Cancel Trip</div>
           </button>
         </div>
       </div>
@@ -63,7 +91,7 @@ export default {
   },
   data() {
     return {
-      bookingState: "booking",
+      tripStarted: false,
       loading: false,
       incomingAccept: false,
       pickup: "",
@@ -83,34 +111,6 @@ export default {
   mounted() {
     this.showMap();
     this.getCurrentLocation();
-
-    const pickupLocation = new google.maps.places.Autocomplete(
-      this.$refs["pickup"]
-    );
-
-    pickupLocation.addListener("place_changed", () => {
-      console.log("Pickup", pickupLocation.getPlace());
-      this.pickuplatlon = {
-        lat: pickupLocation.getPlace().geometry.location.lat(),
-        lon: pickupLocation.getPlace().geometry.location.lng(),
-      };
-
-      this.pickup = pickupLocation.getPlace().formatted_address;
-    });
-
-    const destinationLocation = new google.maps.places.Autocomplete(
-      this.$refs["destination"]
-    );
-
-    destinationLocation.addListener("place_changed", () => {
-      console.log("destination", destinationLocation.getPlace());
-
-      this.destination = destinationLocation.getPlace().formatted_address;
-      this.destinationlatlon = {
-        lat: pickupLocation.getPlace().geometry.location.lat(),
-        lon: pickupLocation.getPlace().geometry.location.lng(),
-      };
-    });
   },
   methods: {
     checkAccept() {
@@ -127,7 +127,7 @@ export default {
       return value.toString();
     },
 
-    startTrip(ride_status) {
+    rideStatusHandler(ride_status) {
       const data = {
         driver: this.currentUserData.user.id,
         passenger: this.rideInfo.passengerId,
@@ -150,7 +150,14 @@ export default {
         })
         .then((res) => {
           console.log(res);
-          this.$toast.success("Ride Started");
+          if (ride_status == "cancelled") {
+            this.$toast.success("Ride cancelled successfully");
+            this.$router.push("/driver/dashboard");
+          } else {
+            this.$toast.success("Ride Started");
+            this.tripStarted = true;
+            this.gotoMap();
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -168,6 +175,14 @@ export default {
           console.log(error);
         }
       );
+    },
+    gotoMap() {
+      const modifiedDriverLocation = this.rideInfo["origin"].replace(/ /g, "+");
+      const modifiedPassengerLocation = this.rideInfo.destination.replace(
+        / /g,
+        "+"
+      );
+      window.location.href = `https://www.google.com/maps/dir/${modifiedDriverLocation}/${modifiedPassengerLocation}/`;
     },
     showMap() {
       navigator.geolocation.getCurrentPosition(
@@ -197,46 +212,14 @@ export default {
         map: map,
       });
     },
-    calculateDistance() {
-      let directionsService = new google.maps.DirectionsService();
-      let directionsRenderer = new google.maps.DirectionsRenderer();
-      // Create route from existing points used for markers
-      const route = {
-        origin: this.pickup,
-        destination: this.destination,
-        travelMode: "DRIVING",
-      };
-
-      const disInstance = this;
-      directionsService.route(route, function (response, status) {
-        // anonymous function to capture directions
-        if (status !== "OK") {
-          window.alert("Directions request failed due to " + status);
-          return;
-        } else {
-          directionsRenderer.setDirections(response); // Add route to the map
-          var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
-          if (!directionsData) {
-            window.alert("Directions request failed");
-            return;
-          } else {
-            disInstance.bookingState = "ride_detail";
-            disInstance.rideFair = parseInt(directionsData.distance.text) * 200;
-            disInstance.distance = directionsData.distance.text;
-            disInstance.duration = directionsData.duration.text;
-            // console.log(directionsData.distance.text);
-            // console.log(directionsData.duration.text);
-          }
-        }
-      });
-    },
   },
 };
 </script>
 <!-- eslint-disable -->
 
 <style scoped>
-.button {
+.button,
+.button-endtrip {
   height: auto;
   padding: 10px 20px;
   background-color: #3f51b5;
@@ -245,6 +228,9 @@ export default {
   text-align: center;
   font-weight: 500;
   cursor: pointer;
+}
+.button-endtrip {
+  background-color: rgb(17, 225, 86);
 }
 .info,
 .info_success {

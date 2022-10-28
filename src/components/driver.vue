@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="grid grid-cols-2 items-center py-3 px-4">
-            <div><h1 class="font-medium text-sm">Location</h1></div>
+            <div><h1 class="font-medium text-sm">Pickup</h1></div>
             <div>
               <h1 class="font-medium text-sm">{{ data.origin }}</h1>
             </div>
@@ -152,7 +152,7 @@ export default {
           console.log(res);
           await this.$swal("Success", `Ride Accepted`, "success");
           this.$store.dispatch("setRideInfo", this.data);
-          this.$router.push("/ongoing-ride");
+          this.$router.push("/driver/ongoing-ride");
         })
         .catch((err) => {
           console.log(err);
