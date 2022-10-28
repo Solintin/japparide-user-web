@@ -76,7 +76,14 @@
 <!-- eslint-disable -->
 
 <script>
-import { getRequest, sendAccept } from "@/Utils/socket";
+import {
+  getRequest,
+  sendAccept,
+  getPassengerCancelRequest,
+} from "@/Utils/socket";
+import { mapGetters } from "vuex";
+import axios from "axios";
+
 export default {
   name: "Driver",
 
@@ -85,26 +92,75 @@ export default {
       incomingRequest: false,
       data: null,
       passenger: null,
+      driverLatLon: null,
+      cancelledRequest: false,
     };
   },
-  async created() {
+  computed: {
+    ...mapGetters(["currentUserData"]),
+  },
+  created() {
     getRequest(this.checkRequest, (requestData) => {
       const { data } = requestData;
+      console.log(data);
       this.data = data;
       this.passenger = requestData.user;
     });
+    getPassengerCancelRequest(this.getCancelledRequest);
   },
   mounted() {
-    const audio = new Audio(
-      "http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3"
-    );
-    audio.play();
+    this.getCurrentLocation();
   },
   methods: {
+    getCancelledRequest() {
+      this.cancelledRequest = true;
+      this.$swal("Cancelled", `Request cancelled`, "error");
+      this.incomingRequest = false;
+    },
+    getCurrentLocation() {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.driverLatLon = {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          };
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
+    rideStatusHandler() {
+      const data = {
+        driver: this.currentUserData.user.id,
+        passenger: this.data.passengerId,
+        passenger_pickup_add: this.data.origin,
+        passenger_dropoff_add: this.data.destination,
+        ride_price: this.data.rideFair,
+        ride_time: this.data.duration,
+        driver_latlon: this.driverLatLon,
+        passenger_pickup_latlon: this.data.passengerPickupLatLon,
+        passenger_dropoff_latlon: this.data.passengerDestinationLatLon,
+        payment_method: this.data.paymentMode,
+        ride_status: "assigned",
+      };
+      axios
+        .post("https://backend.japparide.com/api/ride-informations", {
+          data: data,
+        })
+        .then((res) => {
+          console.log(res);
+          this.$swal("Success", `Ride Accepted`, "success");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     acceptRide() {
       const passenger = this.passenger;
       const message = "Ride acccepted, I'm on my way.";
-
+      this.rideStatusHandler();
       sendAccept(message, passenger);
     },
     cancelRide() {
@@ -113,14 +169,9 @@ export default {
     checkRequest() {
       this.incomingRequest = true;
       const audio = new Audio(
-      "http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3"
-    );
-    audio.play();
-
-      // const getAudio = this.$refs["incoming"];
-      // getAudio.play();
-
-      // x.pause();
+        "http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3"
+      );
+      audio.play();
     },
   },
 };

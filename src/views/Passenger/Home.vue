@@ -3,7 +3,7 @@
   <div class="">
     <div ref="map" id="map" class="absolute inset-0"></div>
     <div
-      class="fixed z-[1] bottom-0 bg-white inset-x-0 rounded-t-xl w-full p-4 flex justify-center items-center h-auto overflow-y-auto"
+      class="fixed z-[1] bottom-0 bg-white inset-x-0 rounded-t-3xl w-full p-4 flex justify-center items-center h-auto overflow-y-auto"
     >
       <div class="max-w-xl w-full mt-6 p-2" v-if="bookingState === 'booking'">
         <input
@@ -121,11 +121,20 @@
         class="md:w-6/12 p-4 w-full flex flex-col justify-center items-center space-y-4"
         v-if="bookingState == 'searching_driver'"
       >
-        <div v-if="!incomingAccept" class="info mx-auto" >JapparideAI will assigned driver to you shortly...</div>
-        <div v-else class="info_success mx-auto" >Ride accepted, driver on his way</div>
-        <img v-if="!incomingAccept" src="@/assets/searching.gif" alt="" class="h-40 w-40" />
+        <div v-if="!incomingAccept" class="info mx-auto">
+          JapparideAI will assigned driver to you shortly...
+        </div>
+        <div v-else class="info_success mx-auto">
+          Ride accepted, driver on his way
+        </div>
+        <img
+          v-if="!incomingAccept"
+          src="@/assets/searching.gif"
+          alt=""
+          class="h-40 w-40"
+        />
         <img v-else src="@/assets/driving.gif" alt="" class="h-40 w-40" />
-        <button class="cancel_button w-full" @click="handleBooking">
+        <button class="cancel_button w-full" @click="cancelBookedRide">
           Cancel
         </button>
       </div>
@@ -135,10 +144,12 @@
 <!-- eslint-disable -->
 
 <script>
+import axios from "axios";
 import { sendRequest, getAccept } from "@/Utils/socket";
+import confirm_action from "@/Utils/confirm_action";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
-import {mapGetters} from 'vuex'
+import { mapGetters } from "vuex";
 export default {
   name: "Passengers",
   mixins: [validationMixin],
@@ -157,16 +168,17 @@ export default {
       distance: "",
       duration: "",
       payment: "cash",
+      pickuplatlon: null,
+      destinationlatlon: null,
     };
   },
-   created() {
-    getAccept(this.checkAccept)
+  created() {
+    getAccept(this.checkAccept);
   },
   computed: {
-    ...mapGetters(["currentUserData"])
+    ...mapGetters(["currentUserData"]),
   },
   mounted() {
-
     this.showMap();
     const pickupLocation = new google.maps.places.Autocomplete(
       this.$refs["pickup"]
@@ -174,6 +186,11 @@ export default {
 
     pickupLocation.addListener("place_changed", () => {
       console.log("Pickup", pickupLocation.getPlace());
+      this.pickuplatlon = {
+        lat: pickupLocation.getPlace().geometry.location.lat(),
+        lon: pickupLocation.getPlace().geometry.location.lng(),
+      };
+
       this.pickup = pickupLocation.getPlace().formatted_address;
     });
 
@@ -185,24 +202,75 @@ export default {
       console.log("destination", destinationLocation.getPlace());
 
       this.destination = destinationLocation.getPlace().formatted_address;
+      this.destinationlatlon = {
+        lat: pickupLocation.getPlace().geometry.location.lat(),
+        lon: pickupLocation.getPlace().geometry.location.lng(),
+      };
     });
   },
   methods: {
     checkAccept() {
+      this.$swal("Success", `Ride Accepted`, "success");
       this.incomingAccept = true;
     },
+    cancelBookedRide() {
+      //confirm_action accepts two arg;
+      // 1- this instance
+      // 2-  An action
+      confirm_action(this, this.rideStatusHandler, "cancelled");
+    },
+    numberConverter(value) {
+      return value.toString();
+    },
+    rideStatusHandler(ride_status) {
+      const data = {
+        driver: null,
+        passenger: this.currentUserData.user.id,
+        passenger_pickup_add: this.pickup,
+        passenger_dropoff_add: this.destination,
+        ride_price: this.numberConverter(this.rideFair),
+        ride_time: new Date().toLocaleString(),
+        driver_latlon: {
+          lat: "",
+          lon: "",
+        },
+        passenger_pickup_latlon: this.pickuplatlon,
+        passenger_dropoff_latlon: this.destinationlatlon,
+        payment_method: this.payment,
+        ride_status: ride_status,
+      };
+      axios
+        .post("https://backend.japparide.com/api/ride-informations", {
+          data: data,
+        })
+        .then((res) => {
+          console.log(res);
+          if (ride_status == "cancelled") {
+            this.$toast.success('Ride cancelled successfully')
+            location.reload();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     bookRide() {
       this.bookingState = "searching_driver";
       const rideRequestInfo = {
-        destination: this .destination,
+        destination: this.destination,
         origin: this.pickup,
-        rideFair: this.rideFair,
+        rideFair: this.numberConverter(this.rideFair),
         distance: this.distance,
         duration: this.duration,
-        payment: this.payment,
-        name: this.currentUserData.user.username
+        paymentMode: this.payment,
+        passengerPickupLatLon: this.pickuplatlon,
+        passengerDestinationLatLon: this.destinationlatlon,
+        passengerId: this.currentUserData.user.id,
+        name: this.currentUserData.user.username,
       };
       sendRequest(rideRequestInfo);
+      this.rideStatusHandler("pending");
     },
     handleBooking() {
       if (
@@ -217,6 +285,7 @@ export default {
     showMap() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          console.log(position.coords.latitude);
           this.initMap(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
@@ -290,7 +359,8 @@ export default {
   font-weight: 500;
   cursor: pointer;
 }
-.info, .info_success {
+.info,
+.info_success {
   border-left: 5px solid #ffaa00;
   padding: 10px;
   align-self: flex-start;
@@ -299,9 +369,8 @@ export default {
   background-color: #fff;
   box-shadow: 0 5px 15px 5px #ccc;
 }
-.info_success{
+.info_success {
   border-left: 5px solid green;
-
 }
 .cancel_button {
   height: auto;

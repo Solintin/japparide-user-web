@@ -2,7 +2,7 @@
 
 import { io } from "socket.io-client";
 
-const socket = io("https://japparide.herokuapp.com");
+const socket = io("http://localhost:3000");
 
 export const startConnection = () => {
   socket.on("connect", () => {
@@ -30,4 +30,16 @@ export const getAccept = (checkAccept) => {
   socket.on("get-accept", () => {
     checkAccept();
   });
+};
+export const sendPassengerCancelRequest = () => {
+  socket.emit("passenger-cancel-request");
+};
+export const getPassengerCancelRequest = (listener) => {
+  socket.on("get-passenger-cancel-request", () => {
+    listener();
+  });
+};
+
+export const passengerCancelRequest = () => {
+  socket.emit("passenger-cancel-request");
 };
