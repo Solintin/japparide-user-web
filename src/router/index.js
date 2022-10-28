@@ -17,11 +17,12 @@ import RegisterUser from "@/views/register-user.vue";
 // import AccountDeactivation from "@/views/deactivate.vue";
 
 // // Dasboard Routes
-import Index from "@/views/Dashboard/index.vue";
-import AwaitingRide from "@/views/Dashboard/driver.vue";
+import Index from "@/views/Driver/index.vue";
+import AwaitingRide from "@/views/Driver/driver.vue";
+import Ridepage from "@/views/Driver/ridepage.vue";
 import Passenger from "@/views/Passenger/index.vue";
 import PassengerHome from "@/views/Passenger/Home.vue";
-// import VerifyEmail from "@/views/Dashboard/VerifyEmail.vue";
+// import VerifyEmail from "@/views/Driver/VerifyEmail.vue";
 // import VerifyPhone from "@/views/Dashboard/VerifyPhone.vue";
 // import Dashboard from "@/views/Dashboard/dashboard.vue";
 // import Kyc from "@/views/Dashboard/kyc.vue";
@@ -94,9 +95,18 @@ const routes = [
         // },
         // beforeEnter: routeGuard,
       },
-      
+      {
+        path: "/driver/ongoing-ride",
+        name: "Drivers",
+        component: Ridepage,
+        // meta: {
+        //   requiresLogin: true,
+        //   title:
+        //     "Dashboard | Modern Era payments solutions and accounting platform",
+        // },
+        // beforeEnter: routeGuard,
+      },
     ],
-
   },
   {
     path: "/passenger",
@@ -114,9 +124,7 @@ const routes = [
         // },
         // beforeEnter: routeGuard,
       },
-      
     ],
-
   },
 ];
 

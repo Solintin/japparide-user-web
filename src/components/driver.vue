@@ -114,7 +114,7 @@ export default {
   methods: {
     getCancelledRequest() {
       this.cancelledRequest = true;
-      this.$swal("Cancelled", `Request cancelled`, "error");
+      this.$swal("Cancelled", `Ride request cancelled`, "error");
       this.incomingRequest = false;
     },
     getCurrentLocation() {
@@ -148,9 +148,11 @@ export default {
         .post("https://backend.japparide.com/api/ride-informations", {
           data: data,
         })
-        .then((res) => {
+        .then(async (res) => {
           console.log(res);
-          this.$swal("Success", `Ride Accepted`, "success");
+          await this.$swal("Success", `Ride Accepted`, "success");
+          this.$store.dispatch("setRideInfo", this.data);
+          this.$router.push("/ongoing-ride");
         })
         .catch((err) => {
           console.log(err);

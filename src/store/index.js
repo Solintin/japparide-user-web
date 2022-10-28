@@ -7,20 +7,18 @@ import createPersistedState from "vuex-persistedstate";
 export default new Vuex.Store({
   plugins: [createPersistedState()],
   state: {
-    currentUser: undefined,
+    rideInfo: null,
     currentUserData: undefined,
     isLoggedIn: false,
     loading: false,
   },
 
   actions: {
-    setUser({ commit }, user) {
-      commit("SET_USER", user);
-      // Cookies.set("token", user.token);
+    setRideInfo({ commit }, data) {
+      commit("SET_RIDE_INFO", data);
     },
     setUserData({ commit }, user) {
       commit("SET_USER_DATA", user);
-      // Cookies.set("token", user.token);
     },
 
     setLoading({ commit }, loadingState) {
@@ -33,9 +31,8 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    SET_USER(state, user) {
-      state.currentUser = user;
-      state.isLoggedIn = true;
+    SET_RIDE_INFO(state, data) {
+      state.rideInfo = data;
     },
     SET_USER_DATA(state, user) {
       state.currentUserData = user;
@@ -54,8 +51,8 @@ export default new Vuex.Store({
   getters: {
     data: (state) => state,
     currentUserData: (state) => state.currentUserData,
-    currentUser(state) {
-      return state.currentUser;
+    rideInfo(state) {
+      return state.rideInfo;
     },
   },
   modules: {},
