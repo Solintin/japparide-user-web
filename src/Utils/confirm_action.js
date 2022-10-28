@@ -1,5 +1,4 @@
 /* eslint-disable  */
-import { sendPassengerCancelRequest } from "./socket";
 
 const index = (dis, action, value) => {
    dis
@@ -15,7 +14,6 @@ const index = (dis, action, value) => {
     .then((result) => {
       if (result.isConfirmed) {
         action(value);
-        sendPassengerCancelRequest()
       }
     });
 };

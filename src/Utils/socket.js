@@ -51,3 +51,12 @@ export const getDriverCancelRequest = (listener) => {
 export const passengerCancelRequest = () => {
   socket.emit("passenger-cancel-request");
 };
+
+export const rideCompleted = (user) => {
+  socket.emit("ride-completed", user);
+};
+export const rideCompletedNotification = (listener) => {
+  socket.on("get-ride-completed", () => {
+    listener();
+  });
+};

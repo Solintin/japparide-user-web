@@ -10,19 +10,21 @@
           <div class="grid grid-cols-2 items-center py-3 px-4">
             <div><h1 class="font-medium text-sm">Full Name</h1></div>
             <div>
-              <h1 class="font-medium text-sm">{{ rideInfo.name }}</h1>
+              <h1 class="font-medium text-sm">{{ rideInfo.data.name }}</h1>
             </div>
           </div>
           <div class="grid grid-cols-2 items-center py-3 px-4">
             <div><h1 class="font-medium text-sm">Pickup</h1></div>
             <div>
-              <h1 class="font-medium text-sm">{{ rideInfo.origin }}</h1>
+              <h1 class="font-medium text-sm">{{ rideInfo.data.origin }}</h1>
             </div>
           </div>
           <div class="grid grid-cols-2 items-center py-3 px-4">
             <div><h1 class="font-medium text-sm">Destination</h1></div>
             <div>
-              <h1 class="font-medium text-sm">{{ rideInfo.destination }}</h1>
+              <h1 class="font-medium text-sm">
+                {{ rideInfo.data.destination }}
+              </h1>
             </div>
           </div>
         </div>
@@ -44,7 +46,7 @@
           </button>
           <button
             v-else
-            @click="endTrip('completed')"
+            @click="rideStatusHandler('completed')"
             class="flex justify-center items-center space-x-3 button-endtrip w-full"
             :class="loading ? 'cursor-not-allowed' : ''"
             :disabled="loading"
@@ -70,6 +72,17 @@
             <div v-else class="font-medium text-sm">Cancel Trip</div>
           </button>
         </div>
+
+        <div
+          v-if="paymentModal"
+          class="fixed inset-0 flex flex-col justify-center items-center bg-[#00000050] z-10"
+        >
+          <div class="rounded-2xl bg-white text-black text-center p-20">
+            <h1 class="text-xl">Ride Fair</h1>
+            <h1 class="text-xl font-bold">N {{ rideInfo.data.rideFair }}</h1>
+            <button class="payment_button mt-4" @click="paymentHandler">Paid</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -79,22 +92,17 @@
 <script>
 import axios from "axios";
 import confirm_action from "@/Utils/confirm_action";
-import { validationMixin } from "vuelidate";
-import { required } from "vuelidate/lib/validators";
-import { mapGetters } from "vuex";
-import { sendDriverCancelRequest } from "../Utils/socket";
+import {mapGetters} from 'vuex'
+import { sendDriverCancelRequest, rideCompleted } from "../Utils/socket";
 export default {
-  name: "Passengers",
-  mixins: [validationMixin],
-  validations: {
-    pickup: { required },
-    destination: { required },
-  },
+  name: "Ridepage",
+ 
   data() {
     return {
       tripStarted: false,
       loading: false,
       incomingAccept: false,
+      paymentModal: false,
       pickup: "",
       destination: "",
       rideFair: 0,
@@ -156,6 +164,9 @@ export default {
             sendDriverCancelRequest(this.rideInfo.user);
             this.$store.dispatch("setRideInfo", null);
             this.$router.push("/driver/dashboard");
+          } else if (ride_status == "completed") {
+            this.$toast.success("Ride Completed");
+            this.paymentModal = true;
           } else {
             this.$toast.success("Ride Started");
             this.tripStarted = true;
@@ -165,6 +176,11 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    paymentHandler() {
+    confirm_action(this, rideCompleted, this.rideInfo.user)
+      this.$store.dispatch("setRideInfo", null);
+      this.$router.push("/driver/dashboard");
     },
     getCurrentLocation() {
       navigator.geolocation.getCurrentPosition(
@@ -180,13 +196,17 @@ export default {
       );
     },
     gotoMap() {
-      const modifiedDriverLocation = this.rideInfo["origin"].replace(/ /g, "+");
+      const modifiedDriverLocation = this.rideInfo.data["origin"].replace(
+        / /g,
+        "+"
+      );
       const modifiedPassengerLocation = this.rideInfo.data.destination.replace(
         / /g,
         "+"
       );
       window.open(
-        `https://www.google.com/maps/dir/${modifiedDriverLocation}/${modifiedPassengerLocation}/`, '_blank'
+        `https://www.google.com/maps/dir/${modifiedDriverLocation}/${modifiedPassengerLocation}/`,
+        "_blank"
       );
     },
     showMap() {
@@ -224,7 +244,8 @@ export default {
 
 <style scoped>
 .button,
-.button-endtrip {
+.button-endtrip,
+.payment_button {
   height: auto;
   padding: 10px 20px;
   background-color: #3f51b5;
@@ -233,6 +254,9 @@ export default {
   text-align: center;
   font-weight: 500;
   cursor: pointer;
+}
+.payment_button {
+  background-color: red;
 }
 .button-endtrip {
   background-color: rgb(17, 225, 86);
