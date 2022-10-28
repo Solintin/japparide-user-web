@@ -1,8 +1,12 @@
 /* eslint-disable  */
 
 import { io } from "socket.io-client";
-
-const socket = io("http://localhost:3000");
+const socket = io("https://japparide.herokuapp.com", {
+  withCredentials: true,
+  extraHeaders: {
+    "my-custom-header": "abcd"
+  }
+})
 
 export const startConnection = () => {
   socket.on("connect", () => {
