@@ -39,6 +39,14 @@ export const getPassengerCancelRequest = (listener) => {
     listener();
   });
 };
+export const sendDriverCancelRequest = (user) => {
+  socket.emit("driver-cancel-request", user);
+};
+export const getDriverCancelRequest = (listener) => {
+  socket.on("get-driver-cancel-request", () => {
+    listener();
+  });
+};
 
 export const passengerCancelRequest = () => {
   socket.emit("passenger-cancel-request");

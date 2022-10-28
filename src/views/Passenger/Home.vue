@@ -145,7 +145,7 @@
 
 <script>
 import axios from "axios";
-import { sendRequest, getAccept } from "@/Utils/socket";
+import { sendRequest, getAccept, getDriverCancelRequest } from "@/Utils/socket";
 import confirm_action from "@/Utils/confirm_action";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
@@ -174,6 +174,7 @@ export default {
   },
   created() {
     getAccept(this.checkAccept);
+    getDriverCancelRequest(this.getDriverCancelRequestListner)
   },
   computed: {
     ...mapGetters(["currentUserData"]),
@@ -209,6 +210,11 @@ export default {
     });
   },
   methods: {
+    getDriverCancelRequestListner(){
+      this.$swal("Canceled", `Ride request cancelled`, "error");
+      this.bookingState = "booking";
+      this.incomingAccept = false;
+    },
     checkAccept() {
       this.$swal("Success", `Ride Accepted`, "success");
       this.incomingAccept = true;

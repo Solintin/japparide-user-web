@@ -82,6 +82,7 @@ import confirm_action from "@/Utils/confirm_action";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
+import { sendDriverCancelRequest } from '../Utils/socket';
 export default {
   name: "Passengers",
   mixins: [validationMixin],
@@ -130,18 +131,18 @@ export default {
     rideStatusHandler(ride_status) {
       const data = {
         driver: this.currentUserData.user.id,
-        passenger: this.rideInfo.passengerId,
-        passenger_pickup_add: this.rideInfo.origin,
-        passenger_dropoff_add: this.rideInfo.destination,
-        ride_price: this.rideInfo.rideFair,
-        ride_time: this.rideInfo.ride_time,
+        passenger: this.rideInfo.data.passengerId,
+        passenger_pickup_add: this.rideInfo.data.origin,
+        passenger_dropoff_add: this.rideInfo.data.destination,
+        ride_price: this.rideInfo.data.rideFair,
+        ride_time: this.rideInfo.data.ride_time,
         driver_latlon: {
           lat: "",
           lon: "",
         },
-        passenger_pickup_latlon: this.rideInfo.passengerPickupLatLon,
-        passenger_dropoff_latlon: this.rideInfo.passengerDestinationLatLon,
-        payment_method: this.rideInfo.paymentMode,
+        passenger_pickup_latlon: this.rideInfo.data.passengerPickupLatLon,
+        passenger_dropoff_latlon: this.rideInfo.data.passengerDestinationLatLon,
+        payment_method: this.rideInfo.data.paymentMode,
         ride_status: ride_status,
       };
       axios
@@ -152,6 +153,7 @@ export default {
           console.log(res);
           if (ride_status == "cancelled") {
             this.$toast.success("Ride cancelled successfully");
+            sendDriverCancelRequest(this.rideInfo.user)
             this.$router.push("/driver/dashboard");
           } else {
             this.$toast.success("Ride Started");
@@ -178,7 +180,7 @@ export default {
     },
     gotoMap() {
       const modifiedDriverLocation = this.rideInfo["origin"].replace(/ /g, "+");
-      const modifiedPassengerLocation = this.rideInfo.destination.replace(
+      const modifiedPassengerLocation = this.rideInfo.data.destination.replace(
         / /g,
         "+"
       );

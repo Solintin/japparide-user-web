@@ -80,6 +80,7 @@ import {
   getRequest,
   sendAccept,
   getPassengerCancelRequest,
+  sendDriverCancelRequest,
 } from "@/Utils/socket";
 import { mapGetters } from "vuex";
 import axios from "axios";
@@ -92,6 +93,7 @@ export default {
       incomingRequest: false,
       data: null,
       passenger: null,
+      allRideInfo: null,
       driverLatLon: null,
       cancelledRequest: false,
     };
@@ -102,6 +104,7 @@ export default {
   created() {
     getRequest(this.checkRequest, (requestData) => {
       const { data } = requestData;
+      this.allRideInfo = requestData;
       console.log(data);
       this.data = data;
       this.passenger = requestData.user;
@@ -151,7 +154,7 @@ export default {
         .then(async (res) => {
           console.log(res);
           await this.$swal("Success", `Ride Accepted`, "success");
-          this.$store.dispatch("setRideInfo", this.data);
+          this.$store.dispatch("setRideInfo", this.allRideInfo);
           this.$router.push("/driver/ongoing-ride");
         })
         .catch((err) => {
@@ -167,6 +170,7 @@ export default {
     },
     cancelRide() {
       this.incomingRequest = false;
+      sendDriverCancelRequest(this.passenger);
     },
     checkRequest() {
       this.incomingRequest = true;
