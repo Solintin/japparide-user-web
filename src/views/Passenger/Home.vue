@@ -236,7 +236,7 @@ export default {
     },
     rideCompletedNotificationListener() {
       this.$swal("Success", `Ride completed successfully, have a nice day.`, "success");
-      this.$router.push("/passenger/dashboard");
+      location.reload();
 
     },
     rideStatusHandler(ride_status) {
