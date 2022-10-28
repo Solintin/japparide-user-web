@@ -1,12 +1,7 @@
 /* eslint-disable  */
 
 import { io } from "socket.io-client";
-const socket = io("https://japparide.herokuapp.com", {
-  withCredentials: true,
-  extraHeaders: {
-    "my-custom-header": "abcd"
-  }
-})
+const socket = io("https://japparide.herokuapp.com/")
 
 export const startConnection = () => {
   socket.on("connect", () => {
